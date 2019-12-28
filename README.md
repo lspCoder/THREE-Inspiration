@@ -1,5 +1,4 @@
 # THREE-Inspiration
-<<<<<<< HEAD
 
 这里可以让你找到写THREEJS的灵感以及，个人收集和积累的一些小特效和效果。通过THREEJS来为你提供思路。
 
@@ -28,6 +27,3 @@
 ## THREEJS Model
 
 ## THREEJS AR
-=======
-some examples based on threejs
->>>>>>> 7da2256597262f5af91826c4f31b9df2ac158fc6
