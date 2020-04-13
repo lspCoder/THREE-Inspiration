@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>geometry</title>
+    <script src="./libs/three.js"></script>
+    <script src="./libs/OrbitControls.js"></script>
+    <script src="./libs/dat.gui.min.js"></script>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <script type="module">
+        import geometryMap, { gui } from "./js/geometry/config.js";
+        let scene, renderer, camera, controls;
+
+        window.geometryMap = geometryMap;
+
+        var geometrySwitch = new dat.GUI();
+        window.geometrySwitch = geometrySwitch;
+        geometrySwitch.domElement.style.float = "left";
+        var folder = geometrySwitch.addFolder("选择geometry");
+        var map = [];
+
+        window.gui = gui;
+
+        for (const type in geometryMap) {
+            if (geometryMap.hasOwnProperty(type)) {
+                map.push(type);
+            }
+        }
+
+        var defaultType = {
+            type: map[0]
+        }
+
+        init();
+        function init() {
+            initScene();
+            initRenderer();
+            initCamera();
+            initControls();
+            initLights();
+            addObjects();
+            render();
+        }
+
+        function initScene() {
+            scene = new THREE.Scene();
+            window.scene = scene;
+        }
+
+        function initRenderer() {
+            renderer = new THREE.WebGLRenderer({
+                antialias: true // 抗锯齿
+            });
+            // 设置dom容器大小
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);    //高分屏失真问题
+            renderer.setClearColor(0x131313);
+            document.body.appendChild(renderer.domElement);
+        }
+
+        function initCamera() {
+            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 1000);
+
+            camera.position.set(0, 0, 50);
+
+            scene.add(camera);
+        }
+
+        function initControls() {
+            controls = new THREE.OrbitControls( camera, renderer.domElement );
+        }
+
+        function initLights() {
+            var lights = [];
+			lights[ 0 ] = new THREE.PointLight( 0xffffff, 1, 0 );
+			lights[ 1 ] = new THREE.PointLight( 0xffffff, 1, 0 );
+			lights[ 2 ] = new THREE.PointLight( 0xffffff, 1, 0 );
+
+			lights[ 0 ].position.set( 0, 200, 0 );
+			lights[ 1 ].position.set( 100, 200, 100 );
+			lights[ 2 ].position.set( - 100, - 200, - 100 );
+
+			scene.add( lights[ 0 ] );
+			scene.add( lights[ 1 ] );
+			scene.add( lights[ 2 ] );
+        }
+
+        function render() {
+            controls.update();
+            renderer.render(scene, camera);
+            requestAnimationFrame(render);
+        }
+
+        function addObjects() {
+            var group = new THREE.Group();
+
+
+            var geometry = new THREE.BufferGeometry();
+            geometry.addAttribute( 'position', new THREE.Float32BufferAttribute( [], 3 ) );
+
+            var lineMaterial = new THREE.LineBasicMaterial( { color: 0xffffff, transparent: true, opacity: 0.5 } );
+            var meshMaterial = new THREE.MeshPhongMaterial( { color: 0x156289, emissive: 0x072534, side:
+            THREE.DoubleSide, flatShading: true } );
+
+            group.add( new THREE.LineSegments( geometry, lineMaterial ) );
+            group.add( new THREE.Mesh( geometry, meshMaterial ) );
+ 
+            geometryMap[defaultType['type']](group);
+            folder.add(defaultType, "type", map).onChange(function(value) {
+                console.log("onChange:" + value)
+                // gui.removeFolder(`THREE.${defaultType['type']}`);
+                geometryMap[defaultType['type']](group);
+            })
+
+            scene.add(group);
+        }
+
+        window.addEventListener( 'resize', function () {
+
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+
+            renderer.setSize( window.innerWidth, window.innerHeight );
+
+        }, false );
+    </script>
+</body>
+
+</html>

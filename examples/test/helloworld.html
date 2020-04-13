@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/three.js/110/three.js'></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.6/dat.gui.min.js"></script>
+    <script src="https://threejs.org/examples/js/controls/OrbitControls.js">
+    </script>
+    <style>
+        body {
+            margin: 0;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%
+        }
+    </style>
+</head>
+
+<body>
+    <script>
+        // 创建场景
+        var scene = new THREE.Scene();
+        //背景色
+        scene.background = new THREE.Color(0xffffff);
+
+        // 创建相机
+        // add a camera
+        // THREE.PerspectiveCamera(fov, aspect, near, far)
+        var camera = new THREE.PerspectiveCamera(
+            75,
+            window.innerWidth / window.innerHeight,
+            0.1,
+            1000
+        );
+
+        // place the camera at z of 100
+        camera.position.set(0, 0, 100);
+        camera.lookAt(scene.position);
+
+        // 创建渲染器
+        // add a renderer
+        var renderer = new THREE.WebGLRenderer();
+        //高分屏
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        // add the renderer element to the DOM so it is in our page
+        document.body.appendChild(renderer.domElement);
+
+        // 添加鼠标控制
+        var controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+
+        //创建对象并添加到场景
+        /* we're creating a cube to put in our scene - don't worry
+        if you don't follow this part, we'll cover geometry and materials
+        in future posts */
+        var geometry = new THREE.BoxGeometry(20, 20, 20);
+        // create a material
+        var material = new THREE.MeshLambertMaterial({
+            color: 0xfd59d7
+        });
+        // add the geometry to the mesh - and apply the material to it
+        var cube = new THREE.Mesh(geometry, material);
+        cube.position.set(-50, 10, 10);
+        scene.add(cube);
+
+        const radius = 7;
+        const widthSegments = 12;
+        const heightSegments = 8;
+        const sphereGeometry = new THREE.SphereBufferGeometry(radius, widthSegments, heightSegments);
+        var material = new THREE.MeshLambertMaterial({
+            color: 0xfd59d7
+        });
+        var sphere = new THREE.Mesh(sphereGeometry, material);
+        sphere.position.set(50, 10, 10);
+        scene.add(sphere);
+
+        // 添加灯光
+        /* we need to add a light so we can see our cube - its almost
+        as if we're turning on a lightbulb within the room */
+        var light = new THREE.PointLight(0xFFFF00);
+        /* position the light so it shines on the cube (x, y, z) */
+        light.position.set(10, 0, 25);
+        scene.add(light);
+
+        // 渲染场景
+        var render = function () {
+            requestAnimationFrame(render);
+
+            cube.rotation.x += 0.01;
+            cube.rotation.y += 0.01;
+            camera.updateProjectionMatrix();
+
+            renderer.render(scene, camera);
+
+            controls.update();
+        };
+
+        render();
+
+        // 自适应窗口
+        function resize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        window.addEventListener("resize", resize);
+
+        // dat gui
+        var gui = new dat.GUI();
+        var cameraGui = gui.addFolder("camera position");
+        cameraGui.add(camera.position, 'x');
+        cameraGui.add(camera.position, 'y');
+        cameraGui.add(camera.position, 'z');
+        cameraGui.open();
+
+        var cameraGui = gui.addFolder("camera projection");
+        cameraGui.add(camera, "fov");
+        cameraGui.open();
+
+        var lightGui = gui.addFolder("light position");
+        lightGui.add(light.position, 'x');
+        lightGui.add(light.position, 'y');
+        lightGui.add(light.position, 'z');
+        lightGui.open();
+
+        var cubeGui = gui.addFolder("cube position");
+        cubeGui.add(cube.position, 'x');
+        cubeGui.add(cube.position, 'y');
+        cubeGui.add(cube.position, 'z');
+        cubeGui.open();
+    </script>
+</body>
+
+</html>
