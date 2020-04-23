@@ -19,5 +19,6 @@
 - THREEJS Video/Webcam
 
 - THREEJS Model
+    - [big model](/Model/big-model.md)
 
 - THREEJS AR
