@@ -28,4 +28,6 @@
 
 ## THREEJS Model
 
+    - [big model](/Model/big-model-compress.md)
+
 ## THREEJS AR

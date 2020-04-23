@@ -1,4 +1,4 @@
-### 大模型优化
+### 大模型文件压缩优化
 
 #### 常见三维模型的格式
 
@@ -55,7 +55,6 @@ THREE.DRACOLoader.getDecoderModule();
 
 loader.load(url, callback)
 ```
-以下是全部代码:
+以下是代码示例:
 
-<iframe height="265" style="width: 100%;" scrolling="no" title="THREEJS-starter" src="https://lspcoder.github.io/THREE-Inspiration/examples/model-draco.html" frameborder="no" allowtransparency="true" allowfullscreen="true">
-</iframe>
+[demo](../examples/model-draco.html ':include :type=iframe width=100% height=400px')
